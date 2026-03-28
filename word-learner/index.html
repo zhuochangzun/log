@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单词学习助手</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 顶部统计栏 -->
+        <header class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-label">总单词</span>
+                <span class="stat-value" id="totalWords">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">已掌握</span>
+                <span class="stat-value" id="masteredWords">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">今日复习</span>
+                <span class="stat-value" id="todayReview">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">今日新学</span>
+                <span class="stat-value" id="todayNew">0</span>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- 侧边导航 -->
+            <aside class="sidebar">
+                <nav class="nav-menu">
+                    <button class="nav-btn active" data-page="study">
+                        <span class="nav-icon">📖</span>
+                        <span>学习</span>
+                    </button>
+                    <button class="nav-btn" data-page="library">
+                        <span class="nav-icon">📚</span>
+                        <span>词库</span>
+                    </button>
+                    <button class="nav-btn" data-page="import">
+                        <span class="nav-icon">📥</span>
+                        <span>导入</span>
+                    </button>
+                    <button class="nav-btn" data-page="settings">
+                        <span class="nav-icon">⚙️</span>
+                        <span>设置</span>
+                    </button>
+                </nav>
+            </aside>
+
+            <!-- 主内容区 -->
+            <main class="content">
+                <!-- 学习页面 -->
+                <div class="page active" id="page-study">
+                    <div class="study-card" id="studyCard">
+                        <div class="card-front">
+                            <div class="word-text" id="currentWord">准备开始学习</div>
+                            <div class="phonetic" id="currentPhonetic"></div>
+                            <button class="btn-show-meaning" id="btnShowMeaning">显示释义</button>
+                        </div>
+                        <div class="card-back">
+                            <div class="word-text" id="reviewWord"></div>
+                            <div class="phonetic" id="reviewPhonetic"></div>
+                            <div class="meaning" id="currentMeaning"></div>
+                            <div class="example" id="currentExample"></div>
+                            <div class="review-buttons">
+                                <button class="btn-review btn-forgot" id="btnForgot">不认识</button>
+                                <button class="btn-review btn-remembered" id="btnRemembered">认识</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="study-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div class="progress-text" id="progressText">0 / 0</div>
+                    </div>
+                    <div class="study-empty" id="studyEmpty">
+                        <p>🎉 今日学习任务已完成！</p>
+                        <p class="sub-text">明天再来复习吧~</p>
+                    </div>
+                </div>
+
+                <!-- 词库页面 -->
+                <div class="page" id="page-library">
+                    <div class="page-header">
+                        <h2>我的词库</h2>
+                        <button class="btn-add" id="btnAddWord">+ 添加单词</button>
+                    </div>
+                    <div class="word-list-header">
+                        <input type="text" class="search-input" id="wordSearch" placeholder="搜索单词...">
+                    </div>
+                    <div class="word-list" id="wordList">
+                        <!-- 单词列表 -->
+                    </div>
+                </div>
+
+                <!-- 导入页面 -->
+                <div class="page" id="page-import">
+                    <div class="import-section">
+                        <h2>导入词库</h2>
+                        <p class="import-tip">支持 JSON 和 CSV 格式</p>
+
+                        <div class="import-box">
+                            <div class="format-selector">
+                                <label>
+                                    <input type="radio" name="format" value="json" checked> JSON
+                                </label>
+                                <label>
+                                    <input type="radio" name="format" value="csv"> CSV
+                                </label>
+                            </div>
+
+                            <textarea class="import-textarea" id="importText" placeholder="粘贴词库内容..."></textarea>
+
+                            <div class="import-actions">
+                                <button class="btn-primary" id="btnImport">导入词库</button>
+                                <button class="btn-secondary" id="btnImportSample">导入示例</button>
+                            </div>
+                        </div>
+
+                        <div class="format-help">
+                            <h3>格式说明</h3>
+                            <div class="format-example" id="formatExample">
+                                <pre>{
+  "words": [
+    {"word": "hello", "meaning": "你好", "phonetic": "/həˈloʊ/", "example": "Hello, world!"},
+    {"word": "computer", "meaning": "电脑", "phonetic": "/kəmˈpjuːtər/", "example": "I use a computer."}
+  ]
+}</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 设置页面 -->
+                <div class="page" id="page-settings">
+                    <div class="settings-section">
+                        <h2>设置</h2>
+
+                        <div class="setting-item">
+                            <label>每日新学单词数</label>
+                            <input type="number" id="settingNewPerDay" value="5" min="1" max="50">
+                        </div>
+
+                        <div class="setting-item">
+                            <label>复习间隔（天）</label>
+                            <div class="interval-settings">
+                                <input type="number" id="interval1" value="1" min="1">
+                                <span>→</span>
+                                <input type="number" id="interval2" value="3" min="1">
+                                <span>→</span>
+                                <input type="number" id="interval3" value="7" min="1">
+                                <span>→</span>
+                                <input type="number" id="interval4" value="14" min="1">
+                                <span>→</span>
+                                <input type="number" id="interval5" value="30" min="1">
+                            </div>
+                        </div>
+
+                        <div class="setting-actions">
+                            <button class="btn-primary" id="btnSaveSettings">保存设置</button>
+                            <button class="btn-danger" id="btnResetData">重置所有数据</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 添加/编辑单词弹窗 -->
+    <div class="modal" id="wordModal">
+        <div class="modal-content">
+            <h3 id="modalTitle">添加单词</h3>
+            <div class="form-group">
+                <label>单词</label>
+                <input type="text" id="inputWord" placeholder="单词">
+            </div>
+            <div class="form-group">
+                <label>释义</label>
+                <input type="text" id="inputMeaning" placeholder="释义">
+            </div>
+            <div class="form-group">
+                <label>音标</label>
+                <input type="text" id="inputPhonetic" placeholder="音标">
+            </div>
+            <div class="form-group">
+                <label>例句</label>
+                <input type="text" id="inputExample" placeholder="例句">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" id="btnCancelModal">取消</button>
+                <button class="btn-primary" id="btnSaveWord">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

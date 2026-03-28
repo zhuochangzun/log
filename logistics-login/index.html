@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>睿云物流指挥中心 - 控制台</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #06b6d4;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #3d4852;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 隐藏滚动条 */
+        ::-webkit-scrollbar { width: 0; height: 0; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--gray-100);
+            min-height: 100vh;
+            color: var(--gray-800);
+        }
+
+        /* ===== 顶部导航 ===== */
+        .navbar {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+            color: white;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .navbar-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .navbar-logo svg { width: 24px; height: 24px; fill: white; }
+
+        .navbar-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .navbar-subtitle {
+            font-size: 11px;
+            color: var(--gray-400);
+            letter-spacing: 1px;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .nav-icon-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .nav-icon-btn svg { width: 20px; height: 20px; }
+
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 18px;
+            height: 18px;
+            background: var(--danger);
+            border-radius: 50%;
+            font-size: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--info));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .user-avatar:hover { transform: scale(1.05); }
+
+        .user-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            width: 240px;
+            padding: 8px;
+            display: none;
+            z-index: 200;
+        }
+
+        .user-dropdown.show { display: block; }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            color: var(--gray-700);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover { background: var(--gray-100); }
+        .dropdown-item svg { width: 18px; height: 18px; fill: var(--gray-500); }
+        .dropdown-divider { height: 1px; background: var(--gray-200); margin: 8px 0; }
+        .dropdown-item.danger { color: var(--danger); }
+        .dropdown-item.danger svg { fill: var(--danger); }
+
+        /* ===== 主内容区 ===== */
+        .main-content {
+            padding: 88px 24px 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ===== 欢迎栏 ===== */
+        .welcome-bar {
+            background: linear-gradient(135deg, var(--primary) 0%, #7c3aed 100%);
+            border-radius: 16px;
+            padding: 24px 32px;
+            color: white;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .welcome-text h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .welcome-text p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .welcome-time {
+            text-align: right;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .welcome-time .date { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+
+        /* ===== 统计卡片 ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon svg { width: 24px; height: 24px; fill: white; }
+
+        .stat-icon.blue { background: linear-gradient(135deg, var(--primary), #60a5fa); }
+        .stat-icon.green { background: linear-gradient(135deg, var(--success), #34d399); }
+        .stat-icon.orange { background: linear-gradient(135deg, var(--warning), #fbbf24); }
+        .stat-icon.red { background: linear-gradient(135deg, var(--danger), #f87171); }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--gray-800);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        .stat-trend {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            font-size: 12px;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+
+        .stat-trend.up { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .stat-trend.down { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+        /* ===== 两列布局 ===== */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        /* ===== 卡片通用 ===== */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .card-action {
+            font-size: 13px;
+            color: var(--primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .card-action:hover { text-decoration: underline; }
+
+        /* ===== 运单表格 ===== */
+        .shipment-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .shipment-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .shipment-table td {
+            padding: 16px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--gray-100);
+            vertical-align: middle;
+        }
+
+        .shipment-table tr:hover td { background: var(--gray-50); }
+        .shipment-table tr:last-child td { border-bottom: none; }
+
+        .waybill-no {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-badge.delivered { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .status-badge.transit { background: rgba(37, 99, 235, 0.1); color: var(--primary); }
+        .status-badge.pending { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .status-badge.exception { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* ===== 快捷操作 ===== */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .quick-action {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 20px 12px;
+            background: var(--gray-50);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            width: 100%;
+        }
+
+        .quick-action:hover {
+            background: var(--gray-100);
+            transform: translateY(-2px);
+        }
+
+        .quick-action-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-action-icon svg { width: 20px; height: 20px; fill: white; }
+        .quick-action-icon.blue { background: var(--primary); }
+        .quick-action-icon.green { background: var(--success); }
+        .quick-action-icon.orange { background: var(--warning); }
+        .quick-action-icon.purple { background: #8b5cf6; }
+
+        .quick-action span {
+            font-size: 13px;
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        /* ===== 通知列表 ===== */
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .notification-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: var(--gray-50);
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+
+        .notification-item:hover { background: var(--gray-100); }
+
+        .notification-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .notification-icon svg { width: 18px; height: 18px; fill: white; }
+        .notification-icon.info { background: var(--info); }
+        .notification-icon.warning { background: var(--warning); }
+        .notification-icon.success { background: var(--success); }
+        .notification-icon.danger { background: var(--danger); }
+
+        .notification-content { flex: 1; min-width: 0; }
+
+        .notification-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-800);
+            margin-bottom: 4px;
+        }
+
+        .notification-desc {
+            font-size: 12px;
+            color: var(--gray-500);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .notification-time {
+            font-size: 11px;
+            color: var(--gray-400);
+            margin-top: 4px;
+        }
+
+        /* ===== 风险预警 ===== */
+        .alert-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(239, 68, 68, 0.05);
+            border-left: 3px solid var(--danger);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .alert-item.warning {
+            background: rgba(245, 158, 11, 0.05);
+            border-left-color: var(--warning);
+        }
+
+        .alert-content { flex: 1; }
+
+        .alert-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-800);
+        }
+
+        .alert-desc {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+
+        .alert-count {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--danger);
+        }
+
+        .alert-item.warning .alert-count { color: var(--warning); }
+
+        /* ===== 进度条 ===== */
+        .progress-item {
+            margin-bottom: 16px;
+        }
+
+        .progress-item:last-child { margin-bottom: 0; }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .progress-label {
+            font-size: 13px;
+            color: var(--gray-700);
+        }
+
+        .progress-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--gray-100);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-fill.blue { background: linear-gradient(90deg, var(--primary), #60a5fa); }
+        .progress-fill.green { background: linear-gradient(90deg, var(--success), #34d399); }
+        .progress-fill.orange { background: linear-gradient(90deg, var(--warning), #fbbf24); }
+
+        /* ===== 移动端适配 ===== */
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 640px) {
+            .navbar { padding: 0 16px; }
+            .navbar-subtitle { display: none; }
+            .main-content { padding: 80px 16px 16px; }
+            .stats-grid { grid-template-columns: 1fr; gap: 12px; }
+            .welcome-bar { flex-direction: column; text-align: center; gap: 16px; }
+            .welcome-time { text-align: center; }
+            .quick-actions { grid-template-columns: repeat(4, 1fr); }
+            .quick-action { padding: 12px 8px; }
+            .quick-action span { font-size: 11px; }
+        }
+
+        /* ===== 登录页样式（保留） ===== */
+        .login-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            padding: 48px 40px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .bg-animation::before, .bg-animation::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(37, 99, 235, 0.15), rgba(16, 185, 129, 0.1));
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .bg-animation::before { top: -200px; left: -200px; }
+        .bg-animation::after { bottom: -200px; right: -200px; animation-delay: -7s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        .logistics-lines {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.1;
+        }
+
+        .logistics-lines svg { width: 100%; height: 100%; }
+
+        body.login-page {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 50%, #1e1b4b 100%);
+        }
+
+        body.login-page .main-content,
+        body.login-page .navbar { display: none; }
+
+        .login-container { display: block; }
+        .dashboard-container { display: none; }
+
+        body.dashboard-page { background: var(--gray-100); }
+        body.dashboard-page .login-container { display: none; }
+        body.dashboard-page .dashboard-container { display: block; }
+        body.dashboard-page .bg-animation { display: none; }
+        body.dashboard-page .logistics-lines { display: none; }
+
+        /* 登录表单样式 */
+        .logo-section { text-align: center; margin-bottom: 40px; }
+        .logo-icon {
+            width: 72px; height: 72px;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+        }
+        .logo-icon svg { width: 40px; height: 40px; fill: white; }
+        .logo-title { font-size: 24px; font-weight: 700; color: var(--gray-800); margin-bottom: 4px; }
+        .logo-subtitle { font-size: 14px; color: var(--gray-500); letter-spacing: 2px; }
+
+        .form-group { margin-bottom: 24px; position: relative; }
+        .form-label { display: block; font-size: 14px; font-weight: 500; color: var(--gray-700); margin-bottom: 8px; }
+        .input-wrapper { position: relative; }
+        .form-input {
+            width: 100%; height: 52px;
+            padding: 0 16px; padding-right: 48px;
+            font-size: 16px;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+        .form-input::placeholder { color: var(--gray-400); }
+        .form-input.error { border-color: var(--danger); }
+        .input-icon {
+            position: absolute; right: 16px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400); cursor: pointer;
+        }
+
+        .captcha-container { display: flex; gap: 12px; align-items: center; }
+        .captcha-input { flex: 1; }
+        .captcha-code {
+            height: 52px; min-width: 120px;
+            background: linear-gradient(135deg, var(--gray-100), var(--gray-200));
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Courier New', monospace;
+            font-size: 24px; font-weight: 700; letter-spacing: 4px;
+            color: var(--gray-800);
+            cursor: pointer; user-select: none;
+        }
+
+        .options-row {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 24px;
+        }
+        .remember-me { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--gray-600); }
+        .remember-me input { width: 18px; height: 18px; accent-color: var(--primary); }
+        .forgot-password { font-size: 14px; color: var(--primary); text-decoration: none; }
+        .forgot-password:hover { text-decoration: underline; }
+
+        .login-btn {
+            width: 100%; height: 52px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; font-size: 16px; font-weight: 600;
+            border: none; border-radius: 12px;
+            cursor: pointer; transition: all 0.3s ease;
+        }
+        .login-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4);
+        }
+        .login-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .error-message {
+            display: none;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            padding: 12px 16px; margin-bottom: 20px;
+            font-size: 14px; color: var(--danger);
+            animation: shake 0.5s ease;
+        }
+        .error-message.show { display: flex; align-items: center; gap: 8px; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        .divider { display: flex; align-items: center; margin: 28px 0; color: var(--gray-400); font-size: 14px; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--gray-200); }
+        .divider span { padding: 0 16px; }
+
+        .register-section { text-align: center; font-size: 14px; color: var(--gray-600); }
+        .register-link { color: var(--primary); text-decoration: none; font-weight: 500; margin-left: 4px; }
+
+        .footer { margin-top: 32px; text-align: center; font-size: 12px; color: var(--gray-400); }
+        .footer a { color: var(--gray-500); text-decoration: none; }
+
+        .password-strength { display: flex; gap: 4px; margin-top: 8px; }
+        .strength-bar { flex: 1; height: 4px; background: var(--gray-200); border-radius: 2px; }
+        .strength-bar.active.weak { background: var(--danger); }
+        .strength-bar.active.medium { background: var(--warning); }
+        .strength-bar.active.strong { background: var(--success); }
+
+        @media (max-width: 480px) {
+            .login-container { padding: 32px 24px; border-radius: 20px; }
+            .logo-icon { width: 60px; height: 60px; }
+            .logo-title { font-size: 20px; }
+            .form-input { height: 48px; }
+            .captcha-code { height: 48px; font-size: 20px; min-width: 100px; }
+            .login-btn { height: 48px; }
+        }
+    </style>
+</head>
+<body class="login-page">
+
+    <!-- 背景（登录页用） -->
+    <div class="bg-animation"></div>
+    <div class="logistics-lines">
+        <svg viewBox="0 0 1000 1000" preserveAspectRatio="none">
+            <path d="M0 500 Q 250 300, 500 500 T 1000 500" stroke="rgba(255,255,255,0.1)" fill="none" stroke-width="2"/>
+            <path d="M0 600 Q 250 400, 500 600 T 1000 600" stroke="rgba(255,255,255,0.08)" fill="none" stroke-width="1"/>
+        </svg>
+    </div>
+
+    <!-- ====== 登录表单 ====== -->
+    <div class="login-container" id="loginContainer">
+        <div class="logo-section">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                </svg>
+            </div>
+            <h1 class="logo-title">睿云物流指挥中心</h1>
+            <p class="logo-subtitle">RUIYUN LOGISTICS COMMAND CENTER</p>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+            </svg>
+            <span id="errorText">登录失败，请重试</span>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label class="form-label">用户名 / 手机号</label>
+                <div class="input-wrapper">
+                    <input type="text" class="form-input" id="username" placeholder="请输入用户名或手机号" autocomplete="username">
+                    <span class="input-icon">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                        </svg>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">密码</label>
+                <div class="input-wrapper">
+                    <input type="password" class="form-input" id="password" placeholder="请输入密码" autocomplete="current-password">
+                    <span class="input-icon" id="togglePassword">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor" id="eyeIcon">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7V9.86l-1.46-1.17c-2.08-1.67-4.91-2.58-7.77-2.58C5.22 6 .02 8.96.02 12.67c0 3.71 5.2 6.67 11.77 6.67 2.86 0 5.69-.91 7.77-2.58l1.46-1.17V19h2v-1.86z"/>
+                        </svg>
+                    </span>
+                </div>
+                <div class="password-strength" id="passwordStrength" style="display: none;">
+                    <div class="strength-bar" id="strength1"></div>
+                    <div class="strength-bar" id="strength2"></div>
+                    <div class="strength-bar" id="strength3"></div>
+                    <div class="strength-bar" id="strength4"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">图形验证码</label>
+                <div class="captcha-container">
+                    <div class="captcha-input">
+                        <input type="text" class="form-input" id="captcha" placeholder="请输入验证码" maxlength="4" autocomplete="off">
+                    </div>
+                    <div class="captcha-code" id="captchaCode" title="点击刷新"></div>
+                </div>
+            </div>
+
+            <div class="options-row">
+                <label class="remember-me">
+                    <input type="checkbox" id="rememberMe">
+                    <span>记住登录状态</span>
+                </label>
+                <a href="#" class="forgot-password">忘记密码？</a>
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">登 录</button>
+
+            <div class="divider"><span>或</span></div>
+
+            <div class="register-section">
+                没有账号？<a href="#" class="register-link">立即注册</a>
+            </div>
+        </form>
+
+        <div class="footer">
+            <a href="#">关于我们</a> · <a href="#">服务条款</a> · <a href="#">隐私政策</a>
+            <br>
+            © 2026 苏州睿云科技有限公司 版权所有
+        </div>
+    </div>
+
+    <!-- ====== 仪表板（登录后显示） ====== -->
+    <div class="dashboard-container" id="dashboardContainer">
+
+        <!-- 顶部导航 -->
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <div class="navbar-logo">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="navbar-title">睿云物流指挥中心</div>
+                    <div class="navbar-subtitle">RUIYUN LOGISTICS COMMAND CENTER</div>
+                </div>
+            </div>
+
+            <div class="navbar-right">
+                <button class="nav-icon-btn" title="消息">
+                    <svg viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+                    </svg>
+                    <span class="notification-badge">3</span>
+                </button>
+                <button class="nav-icon-btn" title="帮助">
+                    <svg viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
+                <div class="user-avatar" id="userAvatar" onclick="toggleDropdown()">张</div>
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="dropdown-item">
+                        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+                        <span id="dropdownUserName">张明</span>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item">
+                        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.05a1 1 0 01.788-.49l7-3a1 1 0 000-1.88l-7-3z"/></svg>
+                        个人中心
+                    </div>
+                    <div class="dropdown-item">
+                        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.38-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.38 1.561.38 2.561 0 3.561a1.532 1.532 0 01-2.287.947 1.532 1.532 0 00-.947-2.287c1.372-.836-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947 1.532 1.532 0 00.947-2.287c-.836-1.372.734-2.942 2.106-2.106a1.532 1.532 0 01.947-2.287c1.561-.38 1.561-2.561 0-3.561z" clip-rule="evenodd"/></svg>
+                        账号设置
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item danger" id="logoutBtn">
+                        <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>
+                        退出登录
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主内容 -->
+        <div class="main-content">
+            <!-- 欢迎栏 -->
+            <div class="welcome-bar">
+                <div class="welcome-text">
+                    <h2 id="welcomeName">早上好，张明</h2>
+                    <p id="welcomeCompany">上海示例贸易有限公司 · VIP钻石会员</p>
+                </div>
+                <div class="welcome-time">
+                    <div class="date" id="currentDate">2026年3月28日</div>
+                    <div id="currentTime">周六 10:30</div>
+                </div>
+            </div>
+
+            <!-- 统计卡片 -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-trend up">↑ 12.5%</span>
+                    <div class="stat-icon blue">
+                        <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>
+                    </div>
+                    <div class="stat-value">1,284</div>
+                    <div class="stat-label">今日发货量</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-trend up">↑ 8.3%</span>
+                    <div class="stat-icon green">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    </div>
+                    <div class="stat-value">986</div>
+                    <div class="stat-label">已完成运单</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-trend down">↓ 3.2%</span>
+                    <div class="stat-icon orange">
+                        <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                    </div>
+                    <div class="stat-value">256</div>
+                    <div class="stat-label">运输中</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-trend up">↑ 15.8%</span>
+                    <div class="stat-icon red">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                    </div>
+                    <div class="stat-value">42</div>
+                    <div class="stat-label">异常运单</div>
+                </div>
+            </div>
+
+            <!-- 两列布局 -->
+            <div class="dashboard-grid">
+                <!-- 左列 -->
+                <div>
+                    <!-- 最新运单 -->
+                    <div class="card" style="margin-bottom: 24px;">
+                        <div class="card-header">
+                            <h3 class="card-title">最新运单动态</h3>
+                            <a class="card-action">查看全部</a>
+                        </div>
+                        <table class="shipment-table">
+                            <thead>
+                                <tr>
+                                    <th>运单号</th>
+                                    <th>目的地</th>
+                                    <th>状态</th>
+                                    <th>更新时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="waybill-no">WB20260328001</span></td>
+                                    <td>美国 · 洛杉矶</td>
+                                    <td><span class="status-badge transit"><span class="status-dot"></span>运输中</span></td>
+                                    <td>10:32</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="waybill-no">WB20260328002</span></td>
+                                    <td>德国 · 法兰克福</td>
+                                    <td><span class="status-badge delivered"><span class="status-dot"></span>已签收</span></td>
+                                    <td>09:45</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="waybill-no">WB20260328003</span></td>
+                                    <td>日本 · 东京</td>
+                                    <td><span class="status-badge pending"><span class="status-dot"></span>待取件</span></td>
+                                    <td>08:20</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="waybill-no">WB20260328004</span></td>
+                                    <td>英国 · 伦敦</td>
+                                    <td><span class="status-badge exception"><span class="status-dot"></span>异常</span></td>
+                                    <td>07:15</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="waybill-no">WB20260328005</span></td>
+                                    <td>澳大利亚 · 悉尼</td>
+                                    <td><span class="status-badge transit"><span class="status-dot"></span>运输中</span></td>
+                                    <td>06:30</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 渠道分布 -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">渠道使用分布</h3>
+                            <a class="card-action">详情</a>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-label">FedEx 国际优先</span>
+                                <span class="progress-value">35%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill blue" style="width: 35%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-label">DHL 国际快递</span>
+                                <span class="progress-value">28%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill green" style="width: 28%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-label">UPS 全球快递</span>
+                                <span class="progress-value">22%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill orange" style="width: 22%"></div>
+                            </div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-header">
+                                <span class="progress-label">其他渠道</span>
+                                <span class="progress-value">15%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill blue" style="width: 15%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右列 -->
+                <div>
+                    <!-- 快捷操作 -->
+                    <div class="card" style="margin-bottom: 24px;">
+                        <div class="card-header">
+                            <h3 class="card-title">快捷操作</h3>
+                        </div>
+                        <div class="quick-actions">
+                            <button class="quick-action">
+                                <div class="quick-action-icon blue">
+                                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                                </div>
+                                <span>新建运单</span>
+                            </button>
+                            <button class="quick-action">
+                                <div class="quick-action-icon green">
+                                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                                </div>
+                                <span>运单追踪</span>
+                            </button>
+                            <button class="quick-action">
+                                <div class="quick-action-icon orange">
+                                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                                </div>
+                                <span>报价计算</span>
+                            </button>
+                            <button class="quick-action">
+                                <div class="quick-action-icon purple">
+                                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+                                </div>
+                                <span>客户管理</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 通知 -->
+                    <div class="card" style="margin-bottom: 24px;">
+                        <div class="card-header">
+                            <h3 class="card-title">最新通知</h3>
+                            <a class="card-action">更多</a>
+                        </div>
+                        <div class="notification-list">
+                            <div class="notification-item">
+                                <div class="notification-icon info">
+                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="notification-title">系统维护通知</div>
+                                    <div class="notification-desc">今晚22:00-24:00进行系统维护</div>
+                                    <div class="notification-time">30分钟前</div>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-icon success">
+                                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="notification-title">运单已签收</div>
+                                    <div class="notification-desc">WB20260327008已成功签收</div>
+                                    <div class="notification-time">2小时前</div>
+                                </div>
+                            </div>
+                            <div class="notification-item">
+                                <div class="notification-icon warning">
+                                    <svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="notification-title">航班延误提醒</div>
+                                    <div class="notification-desc">部分欧洲线路航班延误2-3小时</div>
+                                    <div class="notification-time">4小时前</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 风险预警 -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">风险预警</h3>
+                            <a class="card-action">处理</a>
+                        </div>
+                        <div class="alert-list">
+                            <div class="alert-item">
+                                <div class="alert-content">
+                                    <div class="alert-title">英国海关严查</div>
+                                    <div class="alert-desc">出口英国的货物需加强申报</div>
+                                </div>
+                                <div class="alert-count">5</div>
+                            </div>
+                            <div class="alert-item warning">
+                                <div class="alert-content">
+                                    <div class="alert-title">燃油附加费上调</div>
+                                    <div class="alert-desc">预计下周燃油附加费上涨3%</div>
+                                </div>
+                                <div class="alert-count">3</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 虚拟客户数据
+        const demoUsers = {
+            'demo': {
+                password: 'demo123',
+                userId: 'USR20260328001',
+                userName: '张明（演示账号）',
+                company: '上海示例贸易有限公司',
+                tier: 'VIP 钻石会员',
+                role: '销售经理',
+                initial: '张'
+            },
+            'vip': {
+                password: 'vip123',
+                userId: 'USR20260328002',
+                userName: '李华（VIP账号）',
+                company: '深圳国际物流有限公司',
+                tier: 'VIP 白金会员',
+                role: '客服主管',
+                initial: '李'
+            },
+            'admin': {
+                password: 'admin123',
+                userId: 'USR00000001',
+                userName: '系统管理员',
+                company: '睿云物流科技',
+                tier: '管理员',
+                role: '系统管理',
+                initial: '管'
+            }
+        };
+
+        let failedAttempts = 0;
+        const maxAttempts = 5;
+
+        // 生成验证码
+        function generateCaptcha() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let captcha = '';
+            for (let i = 0; i < 4; i++) {
+                captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('captchaCode').textContent = captcha;
+            return captcha;
+        }
+
+        generateCaptcha();
+        document.getElementById('captchaCode').addEventListener('click', generateCaptcha);
+
+        // 密码显示/隐藏
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.innerHTML = '<path fill-rule="evenodd" d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" clip-rule="evenodd"/>';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.innerHTML = '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0-6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7V9.86l-1.46-1.17c-2.08-1.67-4.91-2.58-7.77-2.58C5.22 6 .02 8.96.02 12.67c0 3.71 5.2 6.67 11.77 6.67 2.86 0 5.69-.91 7.77-2.58l1.46-1.17V19h2v-1.86z"/>';
+            }
+        });
+
+        // 密码强度
+        document.getElementById('password').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strengthContainer = document.getElementById('passwordStrength');
+            const bars = [
+                document.getElementById('strength1'),
+                document.getElementById('strength2'),
+                document.getElementById('strength3'),
+                document.getElementById('strength4')
+            ];
+
+            if (password.length === 0) {
+                strengthContainer.style.display = 'none';
+                return;
+            }
+
+            strengthContainer.style.display = 'flex';
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++;
+
+            bars.forEach((bar, index) => {
+                bar.classList.remove('active', 'weak', 'medium', 'strong');
+                if (index < strength) {
+                    bar.classList.add('active');
+                    if (strength <= 1) bar.classList.add('weak');
+                    else if (strength <= 2) bar.classList.add('medium');
+                    else bar.classList.add('strong');
+                }
+            });
+        });
+
+        // 显示错误
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            document.getElementById('errorText').textContent = message;
+            errorMessage.classList.add('show');
+            setTimeout(() => { errorMessage.classList.remove('show'); }, 5000);
+        }
+
+        // 更新时间和欢迎语
+        function updateDateTime() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+            const timeStr = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            const dayStr = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'][now.getDay()];
+
+            document.getElementById('currentDate').textContent = dateStr;
+            document.getElementById('currentTime').textContent = dayStr + ' ' + timeStr;
+
+            const hour = now.getHours();
+            let greeting = '晚上好';
+            if (hour < 12) greeting = '早上好';
+            else if (hour < 14) greeting = '中午好';
+            else if (hour < 18) greeting = '下午好';
+
+            const user = demoUsers[sessionStorage.getItem('currentUser')] || demoUsers['demo'];
+            document.getElementById('welcomeName').textContent = greeting + '，' + user.userName.replace('（演示账号）', '').replace('（VIP账号）', '');
+            document.getElementById('welcomeCompany').textContent = user.company + ' · ' + user.tier;
+        }
+
+        // 切换下拉菜单
+        function toggleDropdown() {
+            document.getElementById('userDropdown').classList.toggle('show');
+        }
+
+        // 点击空白关闭下拉
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.user-avatar') && !e.target.closest('.user-dropdown')) {
+                document.getElementById('userDropdown').classList.remove('show');
+            }
+        });
+
+        // 登录处理
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const captcha = document.getElementById('captcha').value.trim().toUpperCase();
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const loginBtn = document.getElementById('loginBtn');
+            const generatedCaptcha = document.getElementById('captchaCode').textContent;
+
+            document.getElementById('errorMessage').classList.remove('show');
+
+            if (!username) { showError('请输入用户名或手机号'); return; }
+            if (!password) { showError('请输入密码'); return; }
+            if (!captcha) { showError('请输入图形验证码'); return; }
+            if (captcha !== generatedCaptcha) {
+                showError('验证码错误，请重新输入');
+                generateCaptcha();
+                document.getElementById('captcha').value = '';
+                return;
+            }
+            if (failedAttempts >= maxAttempts) {
+                showError('登录失败次数过多，请 15 分钟后再试');
+                return;
+            }
+
+            loginBtn.disabled = true;
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            const user = demoUsers[username];
+
+            if (user && user.password === password) {
+                failedAttempts = 0;
+                sessionStorage.setItem('currentUser', username);
+
+                if (rememberMe) {
+                    localStorage.setItem('rememberedUser', username);
+                }
+
+                // 更新仪表板
+                document.getElementById('userAvatar').textContent = user.initial;
+                document.getElementById('dropdownUserName').textContent = user.userName;
+                updateDateTime();
+
+                // 切换页面
+                document.body.classList.remove('login-page');
+                document.body.classList.add('dashboard-page');
+
+            } else {
+                failedAttempts++;
+                const remainingAttempts = maxAttempts - failedAttempts;
+                if (remainingAttempts > 0) {
+                    showError('用户名或密码错误，剩余 ' + remainingAttempts + ' 次尝试机会');
+                } else {
+                    showError('登录失败次数过多，请 15 分钟后再试');
+                }
+                generateCaptcha();
+                document.getElementById('captcha').value = '';
+            }
+
+            loginBtn.disabled = false;
+        });
+
+        // 退出登录
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            sessionStorage.removeItem('currentUser');
+            document.body.classList.remove('dashboard-page');
+            document.body.classList.add('login-page');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('captcha').value = '';
+            generateCaptcha();
+            document.getElementById('userDropdown').classList.remove('show');
+        });
+
+        // 记住的登录状态
+        const rememberedUser = localStorage.getItem('rememberedUser');
+        if (rememberedUser) {
+            document.getElementById('username').value = rememberedUser;
+            document.getElementById('rememberMe').checked = true;
+        }
+
+        // 输入框聚焦清除错误
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.classList.remove('error');
+                document.getElementById('errorMessage').classList.remove('show');
+            });
+        });
+
+        // 更新时间
+        setInterval(updateDateTime, 1000);
+    </script>
+</body>
+</html>
