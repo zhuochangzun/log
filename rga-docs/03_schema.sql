@@ -236,36 +236,48 @@ CREATE TABLE IF NOT EXISTS `SKILLS` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='技能配置表';
 
 -- =====================================================
--- 9. 知识库表 (KNOWLEDGE)
+-- 9. 知识库表 (KNOWLEDGE) - 支持三层知识架构
 -- =====================================================
 CREATE TABLE IF NOT EXISTS `KNOWLEDGE` (
     `kb_id`            VARCHAR(32)         NOT NULL,
-    `category`         ENUM('FAQ','SOP','POLICY','COMPETITOR','INDUSTRY','PRODUCT','OTHER') NOT NULL,
+    `layer`            ENUM('PLATFORM','COMPANY','ORDER','USER') NOT NULL DEFAULT 'COMPANY',
+    `company_id`       VARCHAR(32)         DEFAULT NULL COMMENT '租户ID，PLATFORM层为NULL',
+    `order_stage`      ENUM('PENDING','PROCESSING','COMPLETED','EXCEPTION') DEFAULT NULL COMMENT '订单阶段，仅ORDER层使用',
+    `user_id`          VARCHAR(32)         DEFAULT NULL COMMENT '用户ID，仅USER层使用',
+
+    `category`         VARCHAR(64)         NOT NULL COMMENT '分类名称',
     `subcategory`      VARCHAR(64)         DEFAULT NULL,
     `title`            VARCHAR(256)       NOT NULL,
     `content`          TEXT                NOT NULL,
     `summary`          VARCHAR(512)        DEFAULT NULL COMMENT '摘要（用于检索）',
     `tags`             JSON                DEFAULT NULL,
-    `attachments`      JSON                DEFAULT NULL COMMENT '附件列表',
+    `attachments`       JSON                DEFAULT NULL COMMENT '附件列表',
+
     `confidence`       DECIMAL(5,4)       DEFAULT 1.0000,
     `source`           VARCHAR(32)         DEFAULT 'INTERNAL' COMMENT '来源：INTERNAL/EXTERNAL',
     `source_url`       VARCHAR(512)        DEFAULT NULL COMMENT '原文链接',
     `author`           VARCHAR(64)         DEFAULT NULL,
+
     `status`           ENUM('DRAFT','PUBLISHED','ARCHIVED') DEFAULT 'DRAFT',
     `view_count`       INT                  DEFAULT 0,
     `useful_count`     INT                  DEFAULT 0,
     `version`          VARCHAR(16)        DEFAULT '1.0',
+
     `created_by`       VARCHAR(32)         DEFAULT NULL,
     `approved_by`      VARCHAR(32)         DEFAULT NULL,
     `created_at`       TIMESTAMP          DEFAULT CURRENT_TIMESTAMP,
     `updated_at`       TIMESTAMP          DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `published_at`     TIMESTAMP          DEFAULT NULL,
+
     PRIMARY KEY (`kb_id`),
+    KEY `idx_layer` (`layer`),
+    KEY `idx_company_id` (`company_id`),
+    KEY `idx_user_id` (`user_id`),
     KEY `idx_category` (`category`),
     KEY `idx_status` (`status`),
     KEY `idx_created_at` (`created_at`),
     FULLTEXT KEY `ft_search` (`title`, `content`, `summary`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='知识库表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='知识库表-支持三层架构';
 
 -- =====================================================
 -- 10. 操作日志表 (AUDIT_LOG)
