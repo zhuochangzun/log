@@ -221,6 +221,7 @@ CREATE TABLE IF NOT EXISTS `SKILLS` (
     `conditions`           JSON                DEFAULT NULL COMMENT '执行条件',
     `required_params`      JSON                DEFAULT NULL COMMENT '必填参数',
     `optional_params`      JSON                DEFAULT NULL COMMENT '可选参数',
+    `retrieval_layers`     JSON                DEFAULT NULL COMMENT '检索层配置，如["PLATFORM","COMPANY"]',
     `decision_template`    TEXT                DEFAULT NULL COMMENT '决策模板',
     `response_template`    TEXT                DEFAULT NULL COMMENT '响应模板',
     `error_template`       TEXT                DEFAULT NULL COMMENT '错误模板',
@@ -321,14 +322,14 @@ VALUES ('PLATFORM', '睿云平台', 'PLATFORM', 'ACTIVE');
 -- =====================================================
 -- 初始化示例技能配置
 -- =====================================================
-INSERT INTO `SKILLS` (`skill_id`, `skill_name`, `skill_desc`, `keywords`, `required_params`, `priority`, `enabled`)
+INSERT INTO `SKILLS` (`skill_id`, `skill_name`, `skill_desc`, `keywords`, `required_params`, `retrieval_layers`, `priority`, `enabled`)
 VALUES
-    ('SKL001', 'track_waybill', '运单追踪', '["查单", "追踪", "运单", "物流", "到哪了"]', '["waybill_no"]', 10, TRUE),
-    ('SKL002', 'quote_price', '运费报价', '["报价", "价格", "多少钱", "费用"]', '["weight", "country"]', 20, TRUE),
-    ('SKL003', 'query_inventory', '库存查询', '["库存", "有货", "多少件"]', '["warehouse_id", "sku"]', 30, TRUE),
-    ('SKL004', 'create_order', '创建订单', '["下单", "创建订单", "新订单"]', '["customer_id", "items"]', 40, TRUE),
-    ('SKL005', 'search_knowledge', '知识检索', '["怎么操作", "SOP", "流程", "政策"]', '["keywords"]', 50, TRUE),
-    ('SKL006', 'customer_info', '客户信息', '["客户信息", "账号", "联系人"]', '["customer_id"]', 60, TRUE);
+    ('SKL001', 'track_waybill', '运单追踪', '["查单", "追踪", "运单", "物流", "到哪了"]', '["waybill_no"]', '["COMPANY","ORDER"]', 10, TRUE),
+    ('SKL002', 'quote_price', '运费报价', '["报价", "价格", "多少钱", "费用"]', '["weight", "country"]', '["PLATFORM","COMPANY"]', 20, TRUE),
+    ('SKL003', 'query_inventory', '库存查询', '["库存", "有货", "多少件"]', '["warehouse_id", "sku"]', '["COMPANY"]', 30, TRUE),
+    ('SKL004', 'create_order', '创建订单', '["下单", "创建订单", "新订单"]', '["customer_id", "items"]', '["COMPANY","ORDER"]', 40, TRUE),
+    ('SKL005', 'search_knowledge', '知识检索', '["怎么操作", "SOP", "流程", "政策"]', '["keywords"]', '["PLATFORM","COMPANY","USER"]', 50, TRUE),
+    ('SKL006', 'customer_info', '客户信息', '["客户信息", "账号", "联系人"]', '["customer_id"]', '["COMPANY","USER"]', 60, TRUE);
 
 -- =====================================================
 -- 完成
