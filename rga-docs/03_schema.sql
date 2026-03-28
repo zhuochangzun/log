@@ -37,6 +37,23 @@ CREATE TABLE IF NOT EXISTS `USER` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
 
 -- =====================================================
+-- 11. 公司表 (COMPANY) - 租户隔离
+-- =====================================================
+CREATE TABLE IF NOT EXISTS `COMPANY` (
+    `company_id`        VARCHAR(32)         NOT NULL,
+    `company_name`     VARCHAR(128)       NOT NULL,
+    `company_type`      ENUM('PLATFORM','FREIGHT','LOGISTICS') DEFAULT 'FREIGHT',
+    `contact_name`     VARCHAR(64)         DEFAULT NULL,
+    `contact_phone`    VARCHAR(20)         DEFAULT NULL,
+    `contact_email`    VARCHAR(128)        DEFAULT NULL,
+    `status`           ENUM('ACTIVE','SUSPENDED','CANCELLED') DEFAULT 'ACTIVE',
+    `created_at`       TIMESTAMP          DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`       TIMESTAMP          DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`company_id`),
+    KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='公司表-租户隔离';
+
+-- =====================================================
 -- 2. 客户表 (CUSTOMER)
 -- =====================================================
 CREATE TABLE IF NOT EXISTS `CUSTOMER` (
@@ -284,6 +301,10 @@ INSERT INTO `USER` (`user_id`, `username`, `password_hash`, `real_name`, `role`,
 VALUES
     ('USR001', 'admin', '$2b$10$...', '系统管理员', 'ADMIN', 'IT', 'admin@company.com', 'ACTIVE'),
     ('USR002', 'sales001', '$2b$10$...', '销售员', 'SALES', '销售部', 'sales@company.com', 'ACTIVE');
+
+-- 插入平台管理员公司（睿云平台）
+INSERT INTO `COMPANY` (`company_id`, `company_name`, `company_type`, `status`)
+VALUES ('PLATFORM', '睿云平台', 'PLATFORM', 'ACTIVE');
 
 -- =====================================================
 -- 初始化示例技能配置
