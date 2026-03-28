@@ -10,6 +10,7 @@
 | SKL004 | create_order | 下单、创建订单 | 40 | 启用 |
 | SKL005 | search_knowledge | SOP、怎么操作、流程 | 50 | 启用 |
 | SKL006 | customer_info | 客户信息、账号 | 60 | 启用 |
+| SKL007 | proactive_customer_contact | 主动联系客户、运单异常、安抚 | 70 | 启用 |
 
 ---
 
@@ -25,6 +26,7 @@
 | 订单 (create_order) | customer_id, items | receiver_info, remarks |
 | 知识检索 (search_knowledge) | keywords | category, limit |
 | 客户信息 (customer_info) | customer_id | - |
+| 主动联系客户 (proactive_customer_contact) | waybill_no, exception_type, trigger_mode | solution_options, compensation, eta |
 
 ### 2.2 参数继承规则
 
@@ -344,3 +346,81 @@ stateDiagram-v2
 | ❌ 绕过 SKILL 直接推理 | 必须优先匹配技能 |
 | ❌ 输出模糊建议 | 必须具体可执行 |
 | ❌ 仅复述数据 | 必须提供行动建议 |
+
+---
+
+### 3.7 SKL007 - 主动联系客户 (proactive_customer_contact)
+
+**触发条件：**
+```json
+{
+  "keywords": ["主动联系", "运单异常", "安抚客户", "异常通知"],
+  "exclude_keywords": [],
+  "required_params": ["waybill_no", "exception_type", "trigger_mode"],
+  "optional_params": ["solution_options", "compensation", "eta"]
+}
+```
+
+**响应模板：**
+```
+【当前判断】
+运单 {waybill_no} 发生异常，需要主动联系客户进行安抚
+
+【异常情况】
+- 异常类型：{exception_type}
+- 异常原因：{exception_reason}
+- 当前状态：{current_status}
+
+【安抚话术】
+{message_content}
+
+【解决方案】
+1. {solution_1}
+2. {solution_2}
+3. {solution_3}
+
+【预计时间】
+{eta}
+
+【补偿方案】（如有）
+{compensation}
+
+【后续操作】
+{next_action}
+
+【发送渠道】
+企业微信
+
+【升级机制】
+触发条件：客户持续负面情绪 / 多次追问 / 明确要求人工
+操作：自动转人工客服介入
+```
+
+**示例对话：**
+- 自动触发：运单状态变为 EXCEPTION → AI 生成安抚话术 → 员工确认 → 发送客户
+- 手动触发：员工选择运单 → 标记"需要主动联系" → AI 生成话术 → 员工确认 → 发送客户
+
+**升级对话示例：**
+- 客户：多次追问未解决 → 系统提示"正在为您转接人工客服..."
+- 客户："我要人工" → 直接转人工
+
+**状态机：**
+```
+[*] --> 生成话术 : 触发主动联系
+生成话术 --> 员工确认 : AI 生成完成
+员工确认 --> 发送消息 : 员工批准
+员工确认 --> 生成话术 : 驳回修改
+发送消息 --> 双向对话 : 客户收到消息
+双向对话 --> 等待回复 : 客户未回复
+等待回复 --> 理解回复 : 客户回复
+理解回复 --> 执行操作 : 理解意图
+执行操作 --> 双向对话 : 处理完成
+执行操作 --> 转人工 : 升级条件触发
+转人工 --> [*] : 交接人工客服
+```
+
+**禁忌行为：**
+- ❌ 未经员工确认直接发送
+- ❌ 不提供解决方案只道歉
+- ❌ 承诺无法兑现的时间
+- ❌ 客户要求人工时继续机器人回复
