@@ -281,6 +281,25 @@ CREATE TABLE IF NOT EXISTS `KNOWLEDGE` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='知识库表-支持三层架构';
 
 -- =====================================================
+-- 12. 用户层内容表 (USER_LAYER_CONTENT)
+-- =====================================================
+CREATE TABLE IF NOT EXISTS `USER_LAYER_CONTENT` (
+    `content_id`       VARCHAR(32)         NOT NULL,
+    `user_id`          VARCHAR(32)         NOT NULL,
+    `content_type`      ENUM('SCRIPT','TEMPLATE','NOTE','BOOKMARK') NOT NULL,
+    `title`            VARCHAR(256)       NOT NULL,
+    `content`          TEXT                NOT NULL,
+    `is_shared`        BOOLEAN            DEFAULT FALSE COMMENT '是否授权给公司',
+    `share_company_id`  VARCHAR(32)         DEFAULT NULL COMMENT '授权给的公司',
+    `created_at`       TIMESTAMP          DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`       TIMESTAMP          DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`content_id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_content_type` (`content_type`),
+    KEY `idx_is_shared` (`is_shared`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户层内容表';
+
+-- =====================================================
 -- 10. 操作日志表 (AUDIT_LOG)
 -- =====================================================
 CREATE TABLE IF NOT EXISTS `AUDIT_LOG` (
