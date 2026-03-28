@@ -20,6 +20,8 @@ CREATE TABLE IF NOT EXISTS `USER` (
     `password_hash`     VARCHAR(256)       NOT NULL,
     `real_name`         VARCHAR(64)        NOT NULL,
     `role`              ENUM('ADMIN','SALES','CS','WAREHOUSE','FINANCE','RD') NOT NULL,
+    `user_type`         ENUM('PLATFORM_ADMIN','COMPANY_ADMIN','EMPLOYEE','CUSTOMER') DEFAULT 'EMPLOYEE' COMMENT '用户类型',
+    `company_id`        VARCHAR(32)         DEFAULT NULL COMMENT '所属公司ID',
     `department`        VARCHAR(64)        DEFAULT NULL,
     `email`             VARCHAR(128)       DEFAULT NULL,
     `phone`             VARCHAR(20)        DEFAULT NULL,
@@ -32,6 +34,8 @@ CREATE TABLE IF NOT EXISTS `USER` (
     UNIQUE KEY `uk_username` (`username`),
     UNIQUE KEY `uk_email` (`email`),
     KEY `idx_role` (`role`),
+    KEY `idx_user_type` (`user_type`),
+    KEY `idx_company_id` (`company_id`),
     KEY `idx_status` (`status`),
     KEY `idx_department` (`department`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户表';
