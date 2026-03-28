@@ -4,6 +4,24 @@
 
 ```mermaid
 erDiagram
+    USER ||--o{ USER_LAYER_CONTENT : has
+    USER {
+        string user_id PK
+        string username
+        string role
+        string user_type
+        string company_id FK
+    }
+
+    COMPANY ||--o{ USER : has
+    COMPANY ||--o{ KNOWLEDGE : has
+    COMPANY {
+        string company_id PK
+        string company_name
+        string company_type
+        string status
+    }
+
     CUSTOMER ||--o{ ORDER : has
     CUSTOMER ||--o{ WAYBILL : has
     CUSTOMER {
@@ -72,6 +90,7 @@ erDiagram
         string skill_id PK
         string skill_name
         json keywords
+        json retrieval_layers
         json conditions
         text decision_template
         text response_template
@@ -81,6 +100,8 @@ erDiagram
 
     KNOWLEDGE {
         string kb_id PK
+        string layer
+        string company_id FK
         string category
         string title
         text content
@@ -89,6 +110,25 @@ erDiagram
         string source
         timestamp created_at
         timestamp updated_at
+    }
+
+    CATEGORY ||--o{ KNOWLEDGE : categorizes
+    CATEGORY {
+        string category_id PK
+        string layer
+        string parent_id
+        string category_name
+        int sort_order
+        string status
+    }
+
+    USER_LAYER_CONTENT {
+        string content_id PK
+        string user_id FK
+        string content_type
+        string title
+        text content
+        boolean is_shared
     }
 
     AUDIT_LOG {
@@ -100,14 +140,6 @@ erDiagram
         text result
         timestamp created_at
     }
-
-    USER {
-        string user_id PK
-        string username
-        string role
-        string department
-        string email
-    }
 ```
 
 ---
@@ -116,16 +148,19 @@ erDiagram
 
 | 序号 | 表名 | 说明 |
 |------|------|------|
-| 1 | `CUSTOMER` | 客户信息 |
-| 2 | `ORDER` | 订单 |
-| 3 | `WAYBILL` | 运单 |
-| 4 | `WAREHOUSE` | 仓库 |
-| 5 | `INVENTORY` | 库存 |
-| 6 | `PRICING` | 报价规则 |
-| 7 | `SKILLS` | 技能配置 |
-| 8 | `KNOWLEDGE` | 知识库 |
-| 9 | `AUDIT_LOG` | 操作日志 |
-| 10 | `USER` | 用户表 |
+| 1 | `USER` | 用户表 |
+| 2 | `COMPANY` | 公司表 |
+| 3 | `CUSTOMER` | 客户信息 |
+| 4 | `ORDER` | 订单 |
+| 5 | `WAYBILL` | 运单 |
+| 6 | `WAREHOUSE` | 仓库 |
+| 7 | `INVENTORY` | 库存 |
+| 8 | `PRICING` | 报价规则 |
+| 9 | `SKILLS` | 技能配置 |
+| 10 | `KNOWLEDGE` | 知识库 |
+| 11 | `AUDIT_LOG` | 操作日志 |
+| 12 | `CATEGORY` | 知识分类表 |
+| 13 | `USER_LAYER_CONTENT` | 用户层内容表 |
 
 ---
 
@@ -304,6 +339,7 @@ erDiagram
 | `conditions` | JSON | | 执行条件 |
 | `required_params` | JSON | | 必填参数 |
 | `optional_params` | JSON | | 可选参数 |
+| `retrieval_layers` | JSON | | 检索层配置，如["PLATFORM","COMPANY"] |
 | `decision_template` | TEXT | | 决策模板 |
 | `response_template` | TEXT | | 响应模板 |
 | `error_template` | TEXT | | 错误模板 |
@@ -325,7 +361,11 @@ erDiagram
 | 字段 | 类型 | 约束 | 说明 |
 |------|------|------|------|
 | `kb_id` | VARCHAR(32) | PK | 知识ID |
-| `category` | ENUM('FAQ','SOP','POLICY','COMPETITOR','INDUSTRY','PRODUCT','OTHER') | NOT NULL | 分类 |
+| `layer` | ENUM('PLATFORM','COMPANY','ORDER','USER') | NOT NULL DEFAULT 'COMPANY' | 知识层级 |
+| `company_id` | VARCHAR(32) | | 租户ID，PLATFORM层为NULL |
+| `order_stage` | ENUM('PENDING','PROCESSING','COMPLETED','EXCEPTION') | | 订单阶段，仅ORDER层使用 |
+| `user_id` | VARCHAR(32) | | 用户ID，仅USER层使用 |
+| `category` | VARCHAR(64) | NOT NULL | 分类名称 |
 | `subcategory` | VARCHAR(64) | | 子分类 |
 | `title` | VARCHAR(256) | NOT NULL | 标题 |
 | `content` | TEXT | NOT NULL | 内容 |
@@ -347,6 +387,9 @@ erDiagram
 | `published_at` | TIMESTAMP | | 发布时间 |
 
 **索引：**
+- `idx_layer` ON `layer`
+- `idx_company_id` ON `company_id`
+- `idx_user_id` ON `user_id`
 - `idx_category` ON `category`
 - `idx_status` ON `status`
 - `idx_created_at` ON `created_at`
@@ -392,6 +435,8 @@ erDiagram
 | `password_hash` | VARCHAR(256) | NOT NULL | 密码哈希 |
 | `real_name` | VARCHAR(64) | NOT NULL | 真实姓名 |
 | `role` | ENUM('ADMIN','SALES','CS','WAREHOUSE','FINANCE','RD') | NOT NULL | 角色 |
+| `user_type` | ENUM('PLATFORM_ADMIN','COMPANY_ADMIN','EMPLOYEE','CUSTOMER') | DEFAULT 'EMPLOYEE' | 用户类型 |
+| `company_id` | VARCHAR(32) | | 所属公司ID |
 | `department` | VARCHAR(64) | | 部门 |
 | `email` | VARCHAR(128) | UNIQUE | 邮箱 |
 | `phone` | VARCHAR(20) | | 电话 |
@@ -403,8 +448,72 @@ erDiagram
 
 **索引：**
 - `idx_role` ON `role`
+- `idx_user_type` ON `user_type`
+- `idx_company_id` ON `company_id`
 - `idx_status` ON `status`
 - `idx_department` ON `department`
+
+---
+
+### 3.11 COMPANY（公司表）
+
+| 字段 | 类型 | 约束 | 说明 |
+|------|------|------|------|
+| `company_id` | VARCHAR(32) | PK | 公司ID |
+| `company_name` | VARCHAR(128) | NOT NULL | 公司名称 |
+| `company_type` | ENUM('PLATFORM','FREIGHT','LOGISTICS') | DEFAULT 'FREIGHT' | 公司类型 |
+| `contact_name` | VARCHAR(64) | | 联系人 |
+| `contact_phone` | VARCHAR(20) | | 联系电话 |
+| `contact_email` | VARCHAR(128) | | 邮箱 |
+| `status` | ENUM('ACTIVE','SUSPENDED','CANCELLED') | DEFAULT 'ACTIVE' | 状态 |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | 创建时间 |
+| `updated_at` | TIMESTAMP | ON UPDATE CURRENT_TIMESTAMP | 更新时间 |
+
+**索引：**
+- `idx_status` ON `status`
+
+---
+
+### 3.12 CATEGORY（知识分类表）
+
+| 字段 | 类型 | 约束 | 说明 |
+|------|------|------|------|
+| `category_id` | VARCHAR(32) | PK | 分类ID |
+| `layer` | ENUM('PLATFORM','COMPANY','ORDER','USER') | NOT NULL | 所属层级 |
+| `parent_id` | VARCHAR(32) | | 父分类ID |
+| `category_name` | VARCHAR(64) | NOT NULL | 分类名称 |
+| `description` | VARCHAR(256) | | 分类描述 |
+| `sort_order` | INT | DEFAULT 0 | 排序 |
+| `status` | ENUM('ACTIVE','DISABLED') | DEFAULT 'ACTIVE' | 状态 |
+| `created_by` | VARCHAR(32) | | 创建人 |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | 创建时间 |
+| `updated_at` | TIMESTAMP | ON UPDATE CURRENT_TIMESTAMP | 更新时间 |
+
+**索引：**
+- `idx_layer` ON `layer`
+- `idx_parent_id` ON `parent_id`
+- `idx_sort_order` ON `sort_order`
+
+---
+
+### 3.13 USER_LAYER_CONTENT（用户层内容表）
+
+| 字段 | 类型 | 约束 | 说明 |
+|------|------|------|------|
+| `content_id` | VARCHAR(32) | PK | 内容ID |
+| `user_id` | VARCHAR(32) | NOT NULL | 用户ID |
+| `content_type` | ENUM('SCRIPT','TEMPLATE','NOTE','BOOKMARK') | NOT NULL | 内容类型 |
+| `title` | VARCHAR(256) | NOT NULL | 标题 |
+| `content` | TEXT | NOT NULL | 内容 |
+| `is_shared` | BOOLEAN | DEFAULT FALSE | 是否授权给公司 |
+| `share_company_id` | VARCHAR(32) | | 授权给的公司 |
+| `created_at` | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | 创建时间 |
+| `updated_at` | TIMESTAMP | ON UPDATE CURRENT_TIMESTAMP | 更新时间 |
+
+**索引：**
+- `idx_user_id` ON `user_id`
+- `idx_content_type` ON `content_type`
+- `idx_is_shared` ON `is_shared`
 
 ---
 
@@ -412,19 +521,27 @@ erDiagram
 
 ```mermaid
 graph LR
+    USER --> COMPANY
+    COMPANY --> USER
+    COMPANY --> KNOWLEDGE
     CUSTOMER --> ORDER
     CUSTOMER --> WAYBILL
     ORDER --> WAYBILL
     WAREHOUSE --> WAYBILL
     WAREHOUSE --> INVENTORY
+    CATEGORY --> KNOWLEDGE
+    USER --> USER_LAYER_CONTENT
 ```
 
 **外键关系：**
+- `USER.company_id` → `COMPANY.company_id`
+- `KNOWLEDGE.company_id` → `COMPANY.company_id`
 - `ORDER.customer_id` → `CUSTOMER.customer_id`
 - `WAYBILL.customer_id` → `CUSTOMER.customer_id`
 - `WAYBILL.order_id` → `ORDER.order_id`
 - `WAYBILL.warehouse_id` → `WAREHOUSE.warehouse_id`
 - `INVENTORY.warehouse_id` → `WAREHOUSE.warehouse_id`
+- `USER_LAYER_CONTENT.user_id` → `USER.user_id`
 
 ---
 
