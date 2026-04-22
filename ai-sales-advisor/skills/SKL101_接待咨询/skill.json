@@ -1,0 +1,12 @@
+{
+  "id": "SKL101",
+  "name": "接待咨询",
+  "description": "回答客户关于价格/仓库/流程等问题，引导下单",
+  "trigger_keywords": ["寄", "发货", "快递", "物流", "费用", "价格", "时效", "仓库"],
+  "required_params": [],
+  "optional_params": ["origin", "destination", "weight", "cargo_type"],
+  "output": {
+    "type": "conversation",
+    "next_skill": "SKL102"
+  }
+}

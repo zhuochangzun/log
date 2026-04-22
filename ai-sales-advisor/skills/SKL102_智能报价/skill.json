@@ -1,0 +1,12 @@
+{
+  "id": "SKL102",
+  "name": "智能报价",
+  "description": "根据始发地/目的地/重量/仓库计算费用",
+  "trigger_keywords": ["报价", "多少钱", "价格", "费用"],
+  "required_params": ["origin", "destination", "weight"],
+  "optional_params": ["cargo_type", "express_type"],
+  "output": {
+    "type": "quote",
+    "next_skill": "SKL103"
+  }
+}
