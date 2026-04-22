@@ -42,3 +42,18 @@ class Message(BaseModel):
 
     class Config:
         use_enum_values = True
+
+
+class HandoffRecord(BaseModel):
+    """转接记录"""
+    id: str = Field(..., description="转接记录ID")
+    conversation_id: str = Field(..., description="会话ID")
+    reason: str = Field(..., description="转接原因")
+    priority: str = Field(default="NORMAL", description="优先级")
+    handoff_at: datetime = Field(default_factory=datetime.utcnow)
+    return_at: datetime | None = Field(None, description="归还AI时间")
+    result: str | None = Field(None, description="处理结果")
+    agent_id: str | None = Field(None, description="处理人工ID")
+
+    class Config:
+        use_enum_values = True

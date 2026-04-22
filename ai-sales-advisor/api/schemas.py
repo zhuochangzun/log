@@ -27,3 +27,32 @@ class CreateConversationResponse(BaseModel):
 class WebhookRequest(BaseModel):
     event: str
     data: dict
+
+
+class HandoffRequest(BaseModel):
+    conversation_id: str
+    reason: str | None = None
+
+
+class HandoffResponse(BaseModel):
+    handoff_id: str
+    reason: str
+    estimated_wait_time: str
+    message: str
+
+
+class ReturnToAIRequest(BaseModel):
+    conversation_id: str
+    result: str | None = None
+
+
+class CallSummaryRequest(BaseModel):
+    conversation_id: str
+    customer_name: str
+    customer_phone: str | None
+    tier: str
+    call_purpose: str
+    recent_development: str
+    pending_items: list[str]
+    historical_notes: list[str]
+    suggestions: list[str]
