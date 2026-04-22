@@ -1,0 +1,12 @@
+{
+  "id": "SKL103",
+  "name": "下单创建",
+  "description": "调用调度系统创建订单",
+  "trigger_keywords": ["下单", "创建订单", "确认下单", "好的", "可以"],
+  "required_params": ["customer_id", "warehouse_id", "route_id", "weight", "from_address", "to_address", "to_contact", "to_phone"],
+  "optional_params": ["cargo_type", "remarks"],
+  "output": {
+    "type": "order",
+    "next_skill": "SKL104"
+  }
+}
