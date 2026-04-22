@@ -8,9 +8,10 @@ from .conversation_mgr import ConversationManager
 class SkillEngine:
     """SKILL 执行引擎"""
 
-    def __init__(self, skills_dir: Path, conversation_mgr: ConversationManager):
+    def __init__(self, skills_dir: Path, conversation_mgr: ConversationManager, handoff_service: Any | None = None):
         self.skills_dir = Path(skills_dir)
         self.conversation_mgr = conversation_mgr
+        self.handoff_service = handoff_service
         self.skills: dict[str, dict] = {}
         self._load_skills()
 
@@ -70,6 +71,16 @@ class SkillEngine:
         """处理用户消息"""
         conversation = await self.conversation_mgr.get_conversation(conversation_id)
         context = conversation.get("context", {}) if conversation else {}
+
+        # 检查是否需要转人工
+        if self.handoff_service:
+            should_handoff, reason = self.handoff_service.should_handoff(message)
+            if should_handoff:
+                handoff_result = await self.handoff_service.execute_handoff(conversation, reason)
+                return {
+                    "type": "handoff",
+                    "handoff": handoff_result,
+                }
 
         skill_id = self.match_skill(message)
 
