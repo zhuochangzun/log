@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sales Advisor</title>
+    <script src="config.js"></script>
+</head>
+<body>
+    <h1>AI Sales Advisor</h1>
+    <div id="chat-container"></div>
+
+    <script>
+        const API_BASE = CONFIG.apiBaseUrl;
+
+        async function createConversation() {
+            const resp = await fetch(`${API_BASE}/conversations`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    visitor_id: localStorage.getItem('visitor_id'),
+                    channel: "website",
+                }),
+            });
+            const data = await resp.json();
+            return data.conversation_id;
+        }
+
+        async function sendMessage(conversationId, text) {
+            const resp = await fetch(`${API_BASE}/conversations/${conversationId}/messages`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: text }),
+            });
+            const data = await resp.json();
+            return data.response;
+        }
+    </script>
+</body>
+</html>
