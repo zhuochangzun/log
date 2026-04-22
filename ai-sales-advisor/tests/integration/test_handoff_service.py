@@ -16,7 +16,7 @@ def test_should_handoff_customer_request(handoff_service):
 
 def test_should_handoff_negative_emotion(handoff_service):
     """负面情绪检测"""
-    should, reason = handoff_service.should_handoff("太差了，很不满意")
+    should, reason = handoff_service.should_handoff("非常失望，心情很差")
     assert should is True
     assert reason == HandoffReason.NEGATIVE_EMOTION
 
