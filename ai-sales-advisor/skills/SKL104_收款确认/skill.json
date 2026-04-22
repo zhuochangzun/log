@@ -1,0 +1,12 @@
+{
+  "id": "SKL104",
+  "name": "收款确认",
+  "description": "生成账单、跟踪付款状态、确认到账",
+  "trigger_keywords": ["付款", "怎么付", "支付", "已付", "转账"],
+  "required_params": ["order_id"],
+  "optional_params": ["payment_channel"],
+  "output": {
+    "type": "bill",
+    "next_skill": null
+  }
+}
