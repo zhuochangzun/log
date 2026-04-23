@@ -1,0 +1,54 @@
+{
+  "recommended_threshold": 0.3,
+  "fallback_threshold": 0.2,
+  "should_trigger": {
+    "确认关税支付": [
+      {"text": "客户问关税是否已付", "family": "duty_inquiry"},
+      {"text": "帮我确认收件人是否付了关税", "family": "duty_inquiry"},
+      {"text": "Duty paid?", "family": "duty_inquiry"},
+      {"text": "Customs duty paid?", "family": "duty_inquiry"},
+      {"text": "关税支付状态查询", "family": "duty_inquiry"},
+      {"text": "收件人要付关税吗", "family": "duty_inquiry"},
+      {"text": "这票货的关税谁付", "family": "duty_inquiry"}
+    ],
+    "确认货物进展": [
+      {"text": "货物到哪了", "family": "tracking_inquiry"},
+      {"text": "清关完成了吗", "family": "customs_inquiry"},
+      {"text": "什么时候派送", "family": "delivery_inquiry"},
+      {"text": "运单进展查询", "family": "tracking_inquiry"},
+      {"text": "货物清关中吗", "family": "customs_inquiry"},
+      {"text": "预计什么时候到", "family": "delivery_inquiry"},
+      {"text": "派送中了吗", "family": "delivery_inquiry"}
+    ],
+    "vault_search": [
+      {"text": "怎么操作退件", "family": "sop_inquiry"},
+      {"text": "SOP流程是什么", "family": "sop_inquiry"},
+      {"text": "政策是什么", "family": "policy_inquiry"},
+      {"text": "如何处理客户投诉", "family": "process_inquiry"},
+      {"text": "查询知识库", "family": "knowledge_inquiry"},
+      {"text": "这个流程是怎样的", "family": "process_inquiry"},
+      {"text": "操作步骤是什么", "family": "sop_inquiry"}
+    ]
+  },
+  "should_not_trigger": {
+    "确认关税支付": [
+      {"text": "帮我查下物流", "family": "tracking"},
+      {"text": "货物到哪了", "family": "tracking"},
+      {"text": "什么时候发货", "family": "shipping"},
+      {"text": "价格多少", "family": "price"},
+      {"text": "有优惠吗", "family": "promotion"}
+    ],
+    "确认货物进展": [
+      {"text": "关税谁付", "family": "duty"},
+      {"text": "收件人付了没", "family": "duty"},
+      {"text": "价格查询", "family": "price"},
+      {"text": "下单", "family": "order"}
+    ],
+    "vault_search": [
+      {"text": "查下订单", "family": "order"},
+      {"text": "运单到哪了", "family": "tracking"},
+      {"text": "多少钱", "family": "price"},
+      {"text": "我要退货", "family": "return"}
+    ]
+  }
+}

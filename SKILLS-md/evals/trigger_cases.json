@@ -1,0 +1,96 @@
+{
+  "recommended_threshold": 0.3,
+  "fallback_threshold": 0.2,
+  "should_trigger": {
+    "SKL001_track_waybill": [
+      {"text": "帮我查一下运单WB20260328001", "family": "track_request"},
+      {"text": "运单到哪了", "family": "track_request"},
+      {"text": "追踪这个包裹", "family": "track_request"},
+      {"text": "什么状态", "family": "track_request"},
+      {"text": "物流信息", "family": "track_request"},
+      {"text": "到了没有", "family": "track_request"}
+    ],
+    "SKL002_quote_price": [
+      {"text": "发到美国5公斤多少钱", "family": "price_request"},
+      {"text": "报价是多少", "family": "price_request"},
+      {"text": "运费价格", "family": "price_request"},
+      {"text": "寄到欧洲怎么收费", "family": "price_request"},
+      {"text": "空运价格", "family": "price_request"},
+      {"text": "多少运费", "family": "price_request"}
+    ],
+    "SKL003_query_inventory": [
+      {"text": "仓库里有货吗", "family": "inventory_request"},
+      {"text": "库存还有多少", "family": "inventory_request"},
+      {"text": "SKU123库存量", "family": "inventory_request"},
+      {"text": "有货吗", "family": "inventory_request"},
+      {"text": "库存查询", "family": "inventory_request"}
+    ],
+    "SKL004_create_order": [
+      {"text": "我要下单", "family": "order_request"},
+      {"text": "创建订单", "family": "order_request"},
+      {"text": "新订单", "family": "order_request"},
+      {"text": "要发货", "family": "order_request"},
+      {"text": "下单寄走", "family": "order_request"}
+    ],
+    "SKL005_search_knowledge": [
+      {"text": "SOP流程是什么", "family": "sop_request"},
+      {"text": "怎么操作", "family": "sop_request"},
+      {"text": "政策规定", "family": "policy_request"},
+      {"text": "如何处理", "family": "process_request"},
+      {"text": "查询知识库", "family": "knowledge_request"},
+      {"text": "操作步骤", "family": "sop_request"}
+    ],
+    "SKL006_customer_info": [
+      {"text": "客户信息", "family": "customer_request"},
+      {"text": "账号信息", "family": "customer_request"},
+      {"text": "联系人查询", "family": "customer_request"},
+      {"text": "客户资料", "family": "customer_request"}
+    ],
+    "SKL007_proactive_contact": [
+      {"text": "主动联系客户", "family": "proactive_request"},
+      {"text": "运单异常通知", "family": "exception_request"},
+      {"text": "安抚客户", "family": "安抚_request"},
+      {"text": "异常情况联系", "family": "exception_request"},
+      {"text": "客户需要通知", "family": "proactive_request"}
+    ]
+  },
+  "should_not_trigger": {
+    "SKL001_track_waybill": [
+      {"text": "价格多少", "family": "price"},
+      {"text": "怎么下单", "family": "order"},
+      {"text": "仓库在哪", "family": "warehouse"},
+      {"text": "有优惠吗", "family": "promotion"}
+    ],
+    "SKL002_quote_price": [
+      {"text": "帮我查下运单", "family": "track"},
+      {"text": "订单状态", "family": "order"},
+      {"text": "仓库在哪", "family": "warehouse"},
+      {"text": "客户信息", "family": "customer"}
+    ],
+    "SKL003_query_inventory": [
+      {"text": "运单到哪了", "family": "track"},
+      {"text": "价格多少", "family": "price"},
+      {"text": "怎么下单", "family": "order"}
+    ],
+    "SKL004_create_order": [
+      {"text": "运单查一下", "family": "track"},
+      {"text": "库存多少", "family": "inventory"},
+      {"text": "价格报价", "family": "price"}
+    ],
+    "SKL005_search_knowledge": [
+      {"text": "查运单", "family": "track"},
+      {"text": "下单", "family": "order"},
+      {"text": "价格", "family": "price"}
+    ],
+    "SKL006_customer_info": [
+      {"text": "查运单", "family": "track"},
+      {"text": "价格多少", "family": "price"},
+      {"text": "下单", "family": "order"}
+    ],
+    "SKL007_proactive_contact": [
+      {"text": "查运单", "family": "track"},
+      {"text": "价格", "family": "price"},
+      {"text": "下单", "family": "order"}
+    ]
+  }
+}
