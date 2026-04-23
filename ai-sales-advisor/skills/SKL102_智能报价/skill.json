@@ -1,8 +1,8 @@
 {
   "id": "SKL102",
   "name": "智能报价",
-  "description": "根据始发地/目的地/重量/仓库计算费用",
-  "trigger_keywords": ["报价", "多少钱", "价格", "费用"],
+  "description": "客户询问寄送价格、运费、几天到、多少钱时触发。根据始发地、目的地、重量信息调用调度系统计算运费，生成报价单。",
+  "trigger_keywords": ["多少钱", "价格", "报价", "费用", "运费", "时效", "几天到", "多少天", "寄"],
   "required_params": ["origin", "destination", "weight"],
   "optional_params": ["cargo_type", "express_type"],
   "output": {

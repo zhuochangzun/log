@@ -1,8 +1,8 @@
 {
   "id": "SKL103",
   "name": "下单创建",
-  "description": "调用调度系统创建订单",
-  "trigger_keywords": ["下单", "创建订单", "确认下单", "好的", "可以"],
+  "description": "客户确认报价并表示要发货寄件时触发。客户说'下单'、'寄'、'发货'、'好的'、'可以'、'同意'、'就这样'、'开始吧'、'创建订单'、'帮我寄'等确认性表达时触发。调用调度系统创建运单，生成订单号后引导客户进入付款环节（SKL104）。",
+  "trigger_keywords": ["下单", "创建订单", "确认下单", "好的", "可以", "同意", "就这样", "发货", "寄", "开始", "没问题", "行", "好"],
   "required_params": ["customer_id", "warehouse_id", "route_id", "weight", "from_address", "to_address", "to_contact", "to_phone"],
   "optional_params": ["cargo_type", "remarks"],
   "output": {
