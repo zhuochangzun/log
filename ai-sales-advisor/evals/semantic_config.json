@@ -1,0 +1,181 @@
+{
+  "fallback_positive_concepts": [
+    "logistics_inquiry",
+    "pricing_request",
+    "order_action",
+    "payment_action"
+  ],
+  "positive_concepts": {
+    "logistics_inquiry": {
+      "weight": 0.25,
+      "phrases": [
+        "寄",
+        "发货",
+        "快递",
+        "物流",
+        "运输",
+        "送货",
+        "寄送",
+        "投递",
+        "send",
+        "ship",
+        "deliver",
+        "courier"
+      ]
+    },
+    "pricing_request": {
+      "weight": 0.25,
+      "phrases": [
+        "价格",
+        "费用",
+        "报价",
+        "多少钱",
+        "收费",
+        "多少",
+        "成本",
+        "运费",
+        "price",
+        "cost",
+        "fee",
+        "charge",
+        "quote",
+        "rate"
+      ]
+    },
+    "order_action": {
+      "weight": 0.25,
+      "phrases": [
+        "下单",
+        "创建订单",
+        "确认下单",
+        "订单",
+        "寄件",
+        "发货",
+        "下单寄",
+        "要发货",
+        "create order",
+        "place order",
+        "make order"
+      ]
+    },
+    "payment_action": {
+      "weight": 0.2,
+      "phrases": [
+        "付款",
+        "支付",
+        "转账",
+        "汇款",
+        "账单",
+        "收款",
+        "payment",
+        "pay",
+        "transfer"
+      ]
+    },
+    "tracking_action": {
+      "weight": 0.2,
+      "phrases": [
+        "到哪了",
+        "物流",
+        "进度",
+        "状态",
+        "追踪",
+        "跟踪",
+        "货物",
+        "快递到",
+        "包裹",
+        "tracking",
+        "status",
+        "where is"
+      ]
+    },
+    "customer_service_action": {
+      "weight": 0.15,
+      "phrases": [
+        "人工",
+        "客服",
+        "打电话",
+        "投诉",
+        "转人工",
+        "真人",
+        "customer service",
+        "human",
+        "agent"
+      ]
+    }
+  },
+  "negative_concepts": {
+    "greeting": {
+      "weight": 0.4,
+      "exclusive": true,
+      "phrases": [
+        "你好",
+        "您好",
+        "在吗",
+        "hi",
+        "hello",
+        "hey",
+        "嗨",
+        "哈喽"
+      ]
+    },
+    "off_topic": {
+      "weight": 0.5,
+      "exclusive": true,
+      "phrases": [
+        "天气",
+        "几号",
+        "日期",
+        "时间",
+        "今天",
+        "明天",
+        "weather",
+        "date",
+        "time"
+      ]
+    },
+    "info_only": {
+      "weight": 0.3,
+      "exclusive": false,
+      "phrases": [
+        "地址",
+        "电话",
+        "联系人",
+        "在哪里",
+        "怎么走",
+        "营业时间",
+        "address",
+        "phone",
+        "hours"
+      ]
+    },
+    "acknowledgment": {
+      "weight": 0.3,
+      "exclusive": true,
+      "phrases": [
+        "好的",
+        "知道了",
+        "明白了",
+        "谢谢",
+        "了解了",
+        "ok",
+        "okay",
+        "嗯",
+        "收到"
+      ]
+    },
+    "defer": {
+      "weight": 0.35,
+      "exclusive": true,
+      "phrases": [
+        "等下",
+        "等等",
+        "先这样",
+        "我先",
+        "下次再说",
+        "later",
+        "wait"
+      ]
+    }
+  }
+}

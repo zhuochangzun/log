@@ -1,0 +1,190 @@
+{
+  "recommended_threshold": 0.3,
+  "negative_patterns": [
+    "查下天气",
+    "今天几号",
+    "你好",
+    "在吗",
+    "周末休息",
+    "你们公司地址",
+    "老板电话"
+  ],
+  "should_trigger": [
+    {
+      "text": "我想寄快递到美国多少钱",
+      "family": "skl101_pricing_inquiry"
+    },
+    {
+      "text": "寄到澳大利亚怎么收费",
+      "family": "skl101_pricing_inquiry"
+    },
+    {
+      "text": "发货到欧洲走什么渠道",
+      "family": "skl101_pricing_inquiry"
+    },
+    {
+      "text": "寄20公斤到加拿大要多少天",
+      "family": "skl101_pricing_inquiry"
+    },
+    {
+      "text": "帮我查下寄到日本的运费",
+      "family": "skl101_pricing_inquiry"
+    },
+    {
+      "text": "寄东西到美国",
+      "family": "skl101_general_inquiry"
+    },
+    {
+      "text": "你们有哪些仓库",
+      "family": "skl101_warehouse_inquiry"
+    },
+    {
+      "text": "空运和海运有什么区别",
+      "family": "skl101_channel_inquiry"
+    },
+    {
+      "text": "下单寄到美国",
+      "family": "skl103_order_creation"
+    },
+    {
+      "text": "我要发货，帮我创建订单",
+      "family": "skl103_order_creation"
+    },
+    {
+      "text": "好的，就这样下单",
+      "family": "skl103_order_creation"
+    },
+    {
+      "text": "确认下单",
+      "family": "skl103_order_creation"
+    },
+    {
+      "text": "可以，我同意",
+      "family": "skl103_order_creation"
+    },
+    {
+      "text": "怎么付款",
+      "family": "skl104_payment_inquiry"
+    },
+    {
+      "text": "账单收到了，怎么支付",
+      "family": "skl104_payment_inquiry"
+    },
+    {
+      "text": "我已经转账了",
+      "family": "skl104_payment_confirm"
+    },
+    {
+      "text": "已付款，查下",
+      "family": "skl104_payment_confirm"
+    },
+    {
+      "text": "快递到哪了",
+      "family": "skl105_tracking"
+    },
+    {
+      "text": "帮我看下物流进度",
+      "family": "skl105_tracking"
+    },
+    {
+      "text": "货物到美国了吗",
+      "family": "skl105_tracking"
+    },
+    {
+      "text": "我要寄东西",
+      "family": "skl101_general_inquiry"
+    },
+    {
+      "text": "咨询一下发货",
+      "family": "skl101_general_inquiry"
+    }
+  ],
+  "should_not_trigger": [
+    {
+      "text": "你好",
+      "family": "greeting"
+    },
+    {
+      "text": "在吗",
+      "family": "greeting"
+    },
+    {
+      "text": "今天天气怎么样",
+      "family": "off_topic"
+    },
+    {
+      "text": "帮我查下天气",
+      "family": "off_topic"
+    },
+    {
+      "text": "你们公司地址在哪",
+      "family": "info_request"
+    },
+    {
+      "text": "老板联系电话是多少",
+      "family": "info_request"
+    },
+    {
+      "text": "周末休息吗",
+      "family": "info_request"
+    },
+    {
+      "text": "今天几号了",
+      "family": "info_request"
+    },
+    {
+      "text": "哦，我知道了",
+      "family": "acknowledgment"
+    },
+    {
+      "text": "好的，谢谢",
+      "family": "acknowledgment"
+    },
+    {
+      "text": "等下再说",
+      "family": "defer"
+    },
+    {
+      "text": "我先想想",
+      "family": "defer"
+    }
+  ],
+  "near_neighbor": [
+    {
+      "text": "我想了解一下寄快递的流程",
+      "family": "skl101_process_inquiry"
+    },
+    {
+      "text": "寄东西一般多久能到",
+      "family": "skl101_delivery_time"
+    },
+    {
+      "text": "有什么需要注意的吗",
+      "family": "skl101_customs_inquiry"
+    },
+    {
+      "text": "清关是怎么弄的",
+      "family": "skl101_customs_inquiry"
+    },
+    {
+      "text": "能不能便宜点",
+      "family": "price_negotiation"
+    },
+    {
+      "text": "打骨折",
+      "family": "price_negotiation"
+    },
+    {
+      "text": "老客户了，能不能优惠",
+      "family": "price_negotiation"
+    },
+    {
+      "text": "转账要多久到账",
+      "family": "skl104_payment_time"
+    },
+    {
+      "text": "支付宝可以吗",
+      "family": "skl104_payment_method"
+    }
+  ]
+}
